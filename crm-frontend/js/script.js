@@ -101,6 +101,10 @@
     }
 
     //  site search
+    const requestError = document.createElement('div');
+    requestError.classList.add('request-error');
+    requestError.textContent = 'По данному запросу ничего не найдено';
+    main.prepend(requestError);
 
     // const filter = document.getElementById('filter');
     // filter.addEventListener('submit', function (e) {
@@ -121,12 +125,19 @@
         /* функция автозаполнения принимает два аргумента,
         элемент текстового поля и массив возможных значений автозаполнения: */
         let currentFocus;
+        let timeout;
         /* выполнение функции, когда кто-то пишет в текстовом поле: */
         inp.addEventListener('input', function (e) {
             let list, item, i, val = this.value;
             /* закрыть все уже открытые списки значений автозаполнения */
             closeAllLists();
-            if (!val) { return false; }
+            if (!val) {
+                clearTimeout(timeout);
+                timeout = setTimeout(() => {
+                    requestError.classList.remove('is-block');
+                }, 500);
+                return false
+            };
             currentFocus = -1;
             /* создайте элемент DIV, который будет содержать элементы (значения): */
             list = document.createElement('div');
@@ -139,6 +150,7 @@
                 /* проверьте, начинается ли элемент с тех же букв, что и значение текстового поля: */
                 // if (arr[i].substr(0, val.length).toUpperCase() == val.toUpperCase()) {
                 if (arr[i].toUpperCase().includes(val.toUpperCase())) {
+                    requestError.classList.remove('is-block');
                     /* создайте элемент DIV для каждого соответствующего элемента: */
                     item = document.createElement('div');
                     /* сделайте соответствующие буквы жирным шрифтом: */
@@ -169,7 +181,13 @@
                         }
                     });
                     list.appendChild(item);
-                }
+                };
+            }
+            if (list.childElementCount === 0) {
+                clearTimeout(timeout);
+                timeout = setTimeout(() => {
+                    requestError.classList.add('is-block');
+                }, 500);
             }
         });
         /* выполнение функции нажимает клавишу на клавиатуре: */
@@ -292,7 +310,7 @@
         while (tableBody.firstChild) {
             tableBody.removeChild(tableBody.firstChild);
         }
-        
+
         clients.forEach(client => {
             const clientString = document.createElement('tr');
             const clientId = document.createElement('td');
@@ -1110,12 +1128,17 @@
 
         window.addEventListener('click', function (event) {
             if (event.target == modalBackground || event.target == cancelBtn) {
-                removeAllOfModal(newClientModal, newClientModalTab)
+                removeAllOfModal(newClientModal, newClientModalTab);
             }
         })
 
+        document.onkeydown = function (event) {
+            event = event || window.event;
+            if (event.key === 'Escape') removeAllOfModal(newClientModal, newClientModalTab);
+        }
+
         closeBtn.addEventListener('click', () => {
-            removeAllOfModal(newClientModal, newClientModalTab)
+            removeAllOfModal(newClientModal, newClientModalTab);
         })
 
         async function postClientData() {
@@ -1377,6 +1400,16 @@
             }
         });
 
+        document.onkeydown = function (event) {
+            event = event || window.event;
+            if (event.key === 'Escape') {
+                removeAllOfModal(modalElement, modalElementTab);
+                if (window.location.hash) {
+                    history.pushState("", document.title, window.location.pathname);
+                }
+            }
+        }
+
         closeBtn.addEventListener('click', () => {
             removeAllOfModal(modalElement, modalElementTab);
             if (window.location.hash) {
@@ -1458,6 +1491,13 @@
                 removeAllOfModal(removeModalElement, removeModalElementTab);
             }
         });
+
+        document.onkeydown = function (event) {
+            event = event || window.event;
+            if (event.key === 'Escape') {
+                removeAllOfModal(removeModalElement, removeModalElementTab);
+            }
+        }
 
         closeBtn.addEventListener('click', () => {
             removeAllOfModal(removeModalElement, removeModalElementTab);
