@@ -1145,7 +1145,7 @@
             })
 
             async function postClientData() {
-                const response = await fetch('http://localhost:3000/api/clients', {
+                const response = await fetch('https://clients-d-ch-a05d87fdc1be.herokuapp.com/api/clients', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -1482,7 +1482,7 @@
             history.pushState("", document.title, window.location.pathname);
 
             removeBtn.addEventListener('click', async () => {
-                await fetch(`http://localhost:3000/api/clients/${clientId}`, {
+                await fetch(`https://clients-d-ch-a05d87fdc1be.herokuapp.com/api/clients/${clientId}`, {
                     method: 'DELETE',
                 });
                 removeAllOfModal(removeModalElement, removeModalElementTab);
