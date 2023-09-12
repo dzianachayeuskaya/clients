@@ -34,7 +34,7 @@
                 }
             }
             let children = this.doc.body.children;
-            for (let i = 0; i < children.lenght; i++) {
+            for (let i = 0; i < children.length; i++) {
                 element = children[i];
                 if (!this.modal.contains(element)) {
                     if (element.getAttribute('aria-hidden') !== 'true') {
@@ -64,7 +64,7 @@
     let clientsData = await loadClientsData();
 
     async function loadClientsData() {
-        const response = await fetch(`http://localhost:3000/api/clients`);
+        const response = await fetch(`https://clients-d-ch-a05d87fdc1be.herokuapp.com/api/clients`);
         const data = await response.json();
 
         const array = [];
@@ -291,7 +291,6 @@
             location.hash = event.target.parentNode.getAttribute('clientId');
         })
         editBtn.addEventListener('touchstart', event => {
-            console(event)
             location.hash = event.parentNode.getAttribute('clientId');
         })
         editBtn.addEventListener('keypress', event => {
@@ -736,7 +735,7 @@
     if (window.location.hash) openChangeModal();
     window.addEventListener('hashchange', () => openChangeModal());
 
-    function createClouseBtn() {
+    function createCloseBtn() {
         const btnWrapper = document.createElement('div');
         const xmlns = "http://www.w3.org/2000/svg";
         const boxWidth = 29;
@@ -1080,7 +1079,7 @@
         const newClientModalTab = new modalWindow(document, newClientModal);
         const title = document.createElement('h3');
         const closeBtn = document.createElement('button');
-        const closeBtnWrapper = createClouseBtn();
+        const closeBtnWrapper = createCloseBtn();
         const form = document.createElement('form');
         const surnameField = createNewModalInput('surname');
         const nameField = createNewModalInput('name');
@@ -1142,7 +1141,7 @@
         })
 
         async function postClientData() {
-            const response = await fetch('http://localhost:3000/api/clients', {
+            const response = await fetch('https://clients-d-ch-a05d87fdc1be.herokuapp.com/api/clients', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -1176,7 +1175,7 @@
         input.addEventListener('keydown', function (e) {
             if (e.key) { if (e.key.match(/[0-9]/)) return e.preventDefault(); }
         }); // Будет перехватывать все числа при ручном вводе. 
-        // Тажке нужна, чтобы replace не сбрасывал каретку, срабатывая каждый раз.
+        // Также нужна, чтобы replace не сбрасывал каретку, срабатывая каждый раз.
 
         input.addEventListener('input', function (e) {
             // На случай, если умудрились ввести через копипаст или авто-дополнение.
@@ -1326,7 +1325,7 @@
         const title = document.createElement('h3');
         const titleId = document.createElement('span');
         const closeBtn = document.createElement('button');
-        const closeBtnWrapper = createClouseBtn();
+        const closeBtnWrapper = createCloseBtn();
         const form = document.createElement('form');
         const surnameLabel = createChangeModalInput('surname');
         const nameLabel = createChangeModalInput('name');
@@ -1425,7 +1424,7 @@
     }
 
     async function onSave(formData, clientId) {
-        const response = await fetch(`http://localhost:3000/api/clients/${clientId}`, {
+        const response = await fetch(`https://clients-d-ch-a05d87fdc1be.herokuapp.com/api/clients/${clientId}`, {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json',
@@ -1446,7 +1445,7 @@
         const removeModalElementTab = new modalWindow(document, removeModalElement);
         const title = document.createElement('h3');
         const closeBtn = document.createElement('button');
-        const closeBtnWrapper = createClouseBtn();
+        const closeBtnWrapper = createCloseBtn();
         const mainRemoveModal = document.createElement('p');
         const removeBtn = document.createElement('button');
         const cancelBtn = document.createElement('button');
@@ -1477,7 +1476,7 @@
         history.pushState("", document.title, window.location.pathname);
 
         removeBtn.addEventListener('click', async () => {
-            await fetch(`http://localhost:3000/api/clients/${clientId}`, {
+            await fetch(`https://clients-d-ch-a05d87fdc1be.herokuapp.com/api/clients/${clientId}`, {
                 method: 'DELETE',
             });
             removeAllOfModal(removeModalElement, removeModalElementTab);
