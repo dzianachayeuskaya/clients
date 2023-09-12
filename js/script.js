@@ -297,10 +297,12 @@
             location.hash = event.target.getAttribute('clientId');
         })
         deleteBtn.addEventListener('mousedown', event => {
-            main.append(createRemoveModal(event.target.parentNode.getAttribute('clientId')));
+            const removeModalElement = createRemoveModal(event.target.parentNode.getAttribute('clientId'))
+            if (removeModalElement) main.append(removeModalElement);
         });
         deleteBtn.addEventListener('keypress', event => {
-            main.append(createRemoveModal(event.target.getAttribute('clientId')));
+            const removeModalElement = createRemoveModal(event.target.getAttribute('clientId'))
+            if (removeModalElement) main.append(removeModalElement);
         })
         return btnGroup
     }
@@ -463,7 +465,8 @@
         button.append(p);
 
         button.addEventListener('click', () => {
-            main.append(createNewModal());
+            const newModal = createNewModal()
+            if (newModal) main.append(newModal);
             modalBackground.classList.add('modal-background_is-open');
         })
 
@@ -1075,100 +1078,102 @@
     }
 
     function createNewModal() {
-        const newClientModal = document.createElement('div');
-        const newClientModalTab = new modalWindow(document, newClientModal);
-        const title = document.createElement('h3');
-        const closeBtn = document.createElement('button');
-        const closeBtnWrapper = createCloseBtn();
-        const form = document.createElement('form');
-        const surnameField = createNewModalInput('surname');
-        const nameField = createNewModalInput('name');
-        const lastNameField = createNewModalInput('lastName');
-        const contactBtnField = document.createElement('div');
-        const addContactBtn = createAddContactBtn();
-        const saveBtn = document.createElement('button');
-        const cancelBtn = document.createElement('button');
+        if (!document.querySelector('.new-client')) {
+            const newClientModal = document.createElement('div');
+            const newClientModalTab = new modalWindow(document, newClientModal);
+            const title = document.createElement('h3');
+            const closeBtn = document.createElement('button');
+            const closeBtnWrapper = createCloseBtn();
+            const form = document.createElement('form');
+            const surnameField = createNewModalInput('surname');
+            const nameField = createNewModalInput('name');
+            const lastNameField = createNewModalInput('lastName');
+            const contactBtnField = document.createElement('div');
+            const addContactBtn = createAddContactBtn();
+            const saveBtn = document.createElement('button');
+            const cancelBtn = document.createElement('button');
 
-        newClientModal.classList.add('modal', 'new-client');
-        setTimeout(() => { newClientModal.classList.add('modal_is-open') });
-        newClientModalTab.createTabIndex();
-        title.classList.add('modal__title', 'new-client__title');
-        closeBtn.classList.add('modal__close', 'new-client__close', 'btn-reset');
-        form.classList.add('modal__form', 'new-client__form', 'flex');
-        form.action = '#';
-        form.method = 'post';
-        surnameField.input.id = 'new-surname';
-        nameField.input.id = 'new-name';
-        lastNameField.input.style.marginBottom = '25px';
-        contactBtnField.classList.add('modal__contacts-field', 'new-client__contacts-field');
-        saveBtn.classList.add('primary-btn', 'new-client__save-btn', 'flex', 'btn-reset');
-        saveBtn.type = 'submit';
-        cancelBtn.classList.add('secondary-btn', 'new-client__cancel-btn', 'flex', 'btn-reset');
-        cancelBtn.type = 'button';
+            newClientModal.classList.add('modal', 'new-client');
+            setTimeout(() => { newClientModal.classList.add('modal_is-open') });
+            newClientModalTab.createTabIndex();
+            title.classList.add('modal__title', 'new-client__title');
+            closeBtn.classList.add('modal__close', 'new-client__close', 'btn-reset');
+            form.classList.add('modal__form', 'new-client__form', 'flex');
+            form.action = '#';
+            form.method = 'post';
+            surnameField.input.id = 'new-surname';
+            nameField.input.id = 'new-name';
+            lastNameField.input.style.marginBottom = '25px';
+            contactBtnField.classList.add('modal__contacts-field', 'new-client__contacts-field');
+            saveBtn.classList.add('primary-btn', 'new-client__save-btn', 'flex', 'btn-reset');
+            saveBtn.type = 'submit';
+            cancelBtn.classList.add('secondary-btn', 'new-client__cancel-btn', 'flex', 'btn-reset');
+            cancelBtn.type = 'button';
 
-        title.textContent = 'Новый клиент';
-        surnameField.inputPlaceholder.textContent = 'Фамилия';
-        nameField.inputPlaceholder.textContent = 'Имя';
-        lastNameField.inputPlaceholder.textContent = 'Отчество';
-        saveBtn.textContent = 'Сохранить';
-        cancelBtn.textContent = 'Отмена';
+            title.textContent = 'Новый клиент';
+            surnameField.inputPlaceholder.textContent = 'Фамилия';
+            nameField.inputPlaceholder.textContent = 'Имя';
+            lastNameField.inputPlaceholder.textContent = 'Отчество';
+            saveBtn.textContent = 'Сохранить';
+            cancelBtn.textContent = 'Отмена';
 
-        newClientModal.append(title);
-        closeBtn.append(closeBtnWrapper);
-        newClientModal.append(closeBtn);
-        form.append(surnameField.inputWrapper);
-        form.append(nameField.inputWrapper);
-        form.append(lastNameField.inputWrapper);
-        contactBtnField.append(addContactBtn);
-        form.append(contactBtnField);
-        form.append(saveBtn);
-        form.append(cancelBtn);
-        newClientModal.append(form);
+            newClientModal.append(title);
+            closeBtn.append(closeBtnWrapper);
+            newClientModal.append(closeBtn);
+            form.append(surnameField.inputWrapper);
+            form.append(nameField.inputWrapper);
+            form.append(lastNameField.inputWrapper);
+            contactBtnField.append(addContactBtn);
+            form.append(contactBtnField);
+            form.append(saveBtn);
+            form.append(cancelBtn);
+            newClientModal.append(form);
 
-        window.addEventListener('click', function (event) {
-            if (event.target == modalBackground || event.target == cancelBtn) {
-                removeAllOfModal(newClientModal, newClientModalTab);
-            }
-        })
-
-        document.onkeydown = function (event) {
-            event = event || window.event;
-            if (event.key === 'Escape') removeAllOfModal(newClientModal, newClientModalTab);
-        }
-
-        closeBtn.addEventListener('click', () => {
-            removeAllOfModal(newClientModal, newClientModalTab);
-        })
-
-        async function postClientData() {
-            const response = await fetch('https://clients-d-ch-a05d87fdc1be.herokuapp.com/api/clients', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    name: form.name.value.trim(),
-                    surname: form.surname.value.trim(),
-                    lastName: form.lastName.value.trim(),
-                    contacts: createContactsData(),
-                })
+            window.addEventListener('click', function (event) {
+                if (event.target == modalBackground || event.target == cancelBtn) {
+                    removeAllOfModal(newClientModal, newClientModalTab);
+                }
             })
-            return response
+
+            document.onkeydown = function (event) {
+                event = event || window.event;
+                if (event.key === 'Escape') removeAllOfModal(newClientModal, newClientModalTab);
+            }
+
+            closeBtn.addEventListener('click', () => {
+                removeAllOfModal(newClientModal, newClientModalTab);
+            })
+
+            async function postClientData() {
+                const response = await fetch('http://localhost:3000/api/clients', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        name: form.name.value.trim(),
+                        surname: form.surname.value.trim(),
+                        lastName: form.lastName.value.trim(),
+                        contacts: createContactsData(),
+                    })
+                })
+                return response
+            }
+
+            form.addEventListener('submit', async e => {
+                e.preventDefault();
+
+                validateForm(contactBtnField, saveBtn, form);
+
+                if (isValid) {
+                    main.append(protectiveShield);
+                    const newClientResponse = await postClientData();
+                    await submitForm(newClientResponse, newClientModal, newClientModalTab, contactBtnField, saveBtn);
+                } else return
+            });
+
+            return newClientModal
         }
-
-        form.addEventListener('submit', async e => {
-            e.preventDefault();
-
-            validateForm(contactBtnField, saveBtn, form);
-
-            if (isValid) {
-                main.append(protectiveShield);
-                const newClientResponse = await postClientData();
-                await submitForm(newClientResponse, newClientModal, newClientModalTab, contactBtnField, saveBtn);
-            } else return
-        });
-
-        return newClientModal
     }
 
     function validateNumberEnter(input) {
@@ -1440,68 +1445,70 @@
     }
 
     function createRemoveModal(clientId) {
-        modalBackground.classList.add('modal-background_is-open');
-        const removeModalElement = document.createElement('div');
-        const removeModalElementTab = new modalWindow(document, removeModalElement);
-        const title = document.createElement('h3');
-        const closeBtn = document.createElement('button');
-        const closeBtnWrapper = createCloseBtn();
-        const mainRemoveModal = document.createElement('p');
-        const removeBtn = document.createElement('button');
-        const cancelBtn = document.createElement('button');
+        if (!document.querySelector('.remove-client')) {
+            modalBackground.classList.add('modal-background_is-open');
+            const removeModalElement = document.createElement('div');
+            const removeModalElementTab = new modalWindow(document, removeModalElement);
+            const title = document.createElement('h3');
+            const closeBtn = document.createElement('button');
+            const closeBtnWrapper = createCloseBtn();
+            const mainRemoveModal = document.createElement('p');
+            const removeBtn = document.createElement('button');
+            const cancelBtn = document.createElement('button');
 
-        removeModalElement.classList.add('modal', 'remove-client');
-        setTimeout(() => { removeModalElement.classList.add('modal_is-open'), 1 })
-        removeModalElementTab.createTabIndex();
-        title.classList.add('modal__title', 'remove-client__title');
-        closeBtn.classList.add('modal__close', 'remove-client__close', 'btn-reset')
-        mainRemoveModal.classList.add('remove-client__text');
-        removeBtn.classList.add('primary-btn', 'remove-client__save-btn', 'flex', 'btn-reset');
-        removeBtn.type = 'button';
-        cancelBtn.classList.add('secondary-btn', 'remove-client__cancel-btn', 'flex', 'btn-reset');
-        cancelBtn.type = 'button';
+            removeModalElement.classList.add('modal', 'remove-client');
+            setTimeout(() => { removeModalElement.classList.add('modal_is-open'), 1 })
+            removeModalElementTab.createTabIndex();
+            title.classList.add('modal__title', 'remove-client__title');
+            closeBtn.classList.add('modal__close', 'remove-client__close', 'btn-reset')
+            mainRemoveModal.classList.add('remove-client__text');
+            removeBtn.classList.add('primary-btn', 'remove-client__save-btn', 'flex', 'btn-reset');
+            removeBtn.type = 'button';
+            cancelBtn.classList.add('secondary-btn', 'remove-client__cancel-btn', 'flex', 'btn-reset');
+            cancelBtn.type = 'button';
 
-        title.textContent = 'Удалить клиента';
-        mainRemoveModal.textContent = 'Вы действительно хотите удалить данного клиента?';
-        removeBtn.textContent = 'Удалить';
-        cancelBtn.textContent = 'Отмена';
+            title.textContent = 'Удалить клиента';
+            mainRemoveModal.textContent = 'Вы действительно хотите удалить данного клиента?';
+            removeBtn.textContent = 'Удалить';
+            cancelBtn.textContent = 'Отмена';
 
-        removeModalElement.append(title);
-        closeBtn.append(closeBtnWrapper);
-        removeModalElement.append(closeBtn);
-        removeModalElement.append(mainRemoveModal);
-        removeModalElement.append(removeBtn);
-        removeModalElement.append(cancelBtn);
+            removeModalElement.append(title);
+            closeBtn.append(closeBtnWrapper);
+            removeModalElement.append(closeBtn);
+            removeModalElement.append(mainRemoveModal);
+            removeModalElement.append(removeBtn);
+            removeModalElement.append(cancelBtn);
 
-        history.pushState("", document.title, window.location.pathname);
+            history.pushState("", document.title, window.location.pathname);
 
-        removeBtn.addEventListener('click', async () => {
-            await fetch(`https://clients-d-ch-a05d87fdc1be.herokuapp.com/api/clients/${clientId}`, {
-                method: 'DELETE',
+            removeBtn.addEventListener('click', async () => {
+                await fetch(`http://localhost:3000/api/clients/${clientId}`, {
+                    method: 'DELETE',
+                });
+                removeAllOfModal(removeModalElement, removeModalElementTab);
+                clientsData = await loadClientsData();
+                createTableBody(clientsData.data);
+                autocomplete(document.getElementById('headerInput'), clientsData.array);
             });
-            removeAllOfModal(removeModalElement, removeModalElementTab);
-            clientsData = await loadClientsData();
-            createTableBody(clientsData.data);
-            autocomplete(document.getElementById('headerInput'), clientsData.array);
-        });
 
-        window.addEventListener('click', function (event) {
-            if (event.target == modalBackground || event.target == cancelBtn) {
-                removeAllOfModal(removeModalElement, removeModalElementTab);
-            }
-        });
+            window.addEventListener('click', function (event) {
+                if (event.target == modalBackground || event.target == cancelBtn) {
+                    removeAllOfModal(removeModalElement, removeModalElementTab);
+                }
+            });
 
-        document.onkeydown = function (event) {
-            event = event || window.event;
-            if (event.key === 'Escape') {
-                removeAllOfModal(removeModalElement, removeModalElementTab);
+            document.onkeydown = function (event) {
+                event = event || window.event;
+                if (event.key === 'Escape') {
+                    removeAllOfModal(removeModalElement, removeModalElementTab);
+                }
             }
+
+            closeBtn.addEventListener('click', () => {
+                removeAllOfModal(removeModalElement, removeModalElementTab);
+            })
+
+            return removeModalElement
         }
-
-        closeBtn.addEventListener('click', () => {
-            removeAllOfModal(removeModalElement, removeModalElementTab);
-        })
-
-        return removeModalElement
     }
 })()
