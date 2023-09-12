@@ -51,10 +51,10 @@
                 element = this.interactiveElementsList.pop();
                 element.setAttribute('tabindex', '0')
             }
-            while (this.blockElementsList.length !== 0) {
-                element = this.interactiveElementsList.pop();
-                element.setAttribute('aria-label', 'false')
-            }
+            // while (this.blockElementsList.length !== 0) {
+            //     element = this.interactiveElementsList.pop();
+            //     element.setAttribute('aria-label', 'false')
+            // }
         }
     }
     let contactIdStart = 0;
