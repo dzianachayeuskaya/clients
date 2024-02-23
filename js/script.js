@@ -122,14 +122,10 @@
     // });
 
     function autocomplete(inp, arr) {
-        /* функция автозаполнения принимает два аргумента,
-        элемент текстового поля и массив возможных значений автозаполнения: */
         let currentFocus;
         let timeout;
-        /* выполнение функции, когда кто-то пишет в текстовом поле: */
         inp.addEventListener('input', function (e) {
             let list, item, i, val = this.value;
-            /* закрыть все уже открытые списки значений автозаполнения */
             closeAllLists();
             if (!val) {
                 clearTimeout(timeout);
@@ -139,34 +135,21 @@
                 return false
             };
             currentFocus = -1;
-            /* создайте элемент DIV, который будет содержать элементы (значения): */
             list = document.createElement('div');
             list.setAttribute('id', this.id + '-autocomplete-list');
             list.setAttribute('class', 'autocomplete-items');
-            /* добавьте элемент DIV в качестве дочернего элемента контейнера автозаполнения: */
             this.parentNode.appendChild(list);
-            /* для каждого элемента в массиве... */
             for (i = 0; i < arr.length; i++) {
-                /* проверьте, начинается ли элемент с тех же букв, что и значение текстового поля: */
-                // if (arr[i].substr(0, val.length).toUpperCase() == val.toUpperCase()) {
                 if (arr[i].toUpperCase().includes(val.toUpperCase())) {
                     requestError.classList.remove('is-block');
-                    /* создайте элемент DIV для каждого соответствующего элемента: */
                     item = document.createElement('div');
-                    /* сделайте соответствующие буквы жирным шрифтом: */
-                    // item.innerHTML = '<strong>' + arr[i] + '</strong>';
                     item.innerHTML = '<strong>' + arr[i].substr(0, val.length) + '</strong>';
                     item.innerHTML += arr[i].substr(val.length);
-                    /* вставьте поле ввода, которое будет содержать значение текущего элемента массива: */
                     item.innerHTML += "<input type='hidden' value='" + arr[i] + "'>";
-                    /* выполнение функции, когда кто-то нажимает на значение элемента (элемент DIV): */
                     item.addEventListener('click', function (e) {
-                        /* вставьте значение для текстового поля автозаполнения: */
                         inp.value = this.getElementsByTagName('input')[0].value;
                         const inpSurname = this.getElementsByTagName('input')[0].value.split(' ')[1];
                         const inpName = this.getElementsByTagName('input')[0].value.split(' ')[0];
-                        /* закройте список значений автозаполнения,
-                        (или любые другие открытые списки значений автозаполнения : */
                         closeAllLists();
                         for (let ind = 0; ind < clientsData.data.length; ind++) {
                             let currentClient;
@@ -190,50 +173,33 @@
                 }, 500);
             }
         });
-        /* выполнение функции нажимает клавишу на клавиатуре: */
         inp.addEventListener('keydown', function (e) {
             let autocompleteList = document.getElementById(this.id + '-autocomplete-list');
             if (autocompleteList) autocompleteList = autocompleteList.getElementsByTagName('div');
             if (e.keyCode == 40) {
-                /* Если нажата клавиша со стрелкой вниз,
-                увеличение текущей переменной фокуса: */
-                currentFocus++;
-                /* и сделать текущий элемент более видимым: */
                 addActive(autocompleteList);
-            } else if (e.keyCode == 38) { //вверх
-                /* Если нажата клавиша со стрелкой вверх,
-                уменьшите текущую переменную фокуса: */
-                currentFocus--;
-                /* и сделать текущий элемент более видимым: */
+            } else if (e.keyCode == 38) { 
                 addActive(autocompleteList);
             } else if (e.keyCode == 13) {
-                /* Если нажата клавиша ENTER, предотвратите отправку формы, */
                 e.preventDefault();
                 if (currentFocus > -1) {
-                    /* и имитировать щелчок по элементу 'active': */
                     if (autocompleteList) autocompleteList[currentFocus].click();
                 }
             }
         });
         function addActive(autocompleteList) {
-            /* функция для классификации элемента как 'active': */
             if (!autocompleteList) return false;
-            /* начните с удаления 'активного' класса для всех элементов: */
             removeActive(autocompleteList);
             if (currentFocus >= autocompleteList.length) currentFocus = 0;
             if (currentFocus < 0) currentFocus = (autocompleteList.length - 1);
-            /*добавить класса 'autocomplete-active': */
             autocompleteList[currentFocus].classList.add('autocomplete-active');
         }
         function removeActive(autocompleteList) {
-            /* функция для удаления 'активного' класса из всех элементов автозаполнения: */
             for (let i = 0; i < autocompleteList.length; i++) {
                 autocompleteList[i].classList.remove('autocomplete-active');
             }
         }
         function closeAllLists(elmnt) {
-            /* закройте все списки автозаполнения в документе,
-            кроме того, который был передан в качестве аргумента: */
             let autocompleteList = document.getElementsByClassName('autocomplete-items');
             for (let i = 0; i < autocompleteList.length; i++) {
                 if (elmnt != autocompleteList[i] && elmnt != inp) {
@@ -241,7 +207,6 @@
                 }
             }
         }
-        /* выполнение функции, когда кто-то щелкает в документе: */
         document.addEventListener('click', function (e) {
             closeAllLists(e.target);
         });
@@ -341,20 +306,12 @@
             clientContactsList.classList.add('cell__contacts-list', 'flex', 'list-reset');
             clientContactItem.classList.add('contact__item', 'contact__item_more', 'btn-reset')
 
-            const createdAtDate = client.createdAt.split('T')[0];
-            const createdAtYear = createdAtDate.split('-')[0];
-            const createdAtMonth = createdAtDate.split('-')[1];
-            const createdAtDay = createdAtDate.split('-')[2];
-            const creatingTime = client.createdAt.split('T')[1];
-            const createdAtHour = creatingTime.split(':')[0];
-            const createdAtMinute = creatingTime.split(':')[1];
-            const updatedAtDate = client.updatedAt.split('T')[0];
-            const updatedAtYear = updatedAtDate.split('-')[0];
-            const updatedAtMonth = updatedAtDate.split('-')[1];
-            const updatedAtDay = updatedAtDate.split('-')[2];
-            const updatingTime = client.updatedAt.split('T')[1];
-            const updatedAtHour = updatingTime.split(':')[0];
-            const updatedAtMinute = updatingTime.split(':')[1];
+            const [createdAtDate, creatingTime] = client.createdAt.split('T');
+            const [createdAtYear, createdAtMonth, createdAtDay] = createdAtDate.split('-');
+            const [createdAtHour, createdAtMinute] = creatingTime.split(':');
+            const [updatedAtDate, updatingTime] = client.updatedAt.split('T');
+            const [updatedAtYear, updatedAtMonth, updatedAtDay] = updatedAtDate.split('-');
+            const [updatedAtHour, updatedAtMinute] = updatingTime.split(':');
 
             clientId.innerHTML = client.id;
             clientName.innerHTML = client.surname + ' ' + client.name + ' ' + client.lastName;
